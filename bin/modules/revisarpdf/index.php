@@ -103,7 +103,7 @@ if (!isset($_SESSION['user_login_status']) AND $_SESSION['user_login_status'] !=
       
 
 <div class="container-fluid">
-             <div class="col-md-12">
+             <div class="col-md-6">
                 <div class="panel panel-primary">
                     <div class="panel-heading"><h5>Ver Archivos</h5></div>
                     <div class="panel-body">
@@ -145,13 +145,25 @@ if (!isset($_SESSION['user_login_status']) AND $_SESSION['user_login_status'] !=
                 <td><?php echo $datos['firstname']; ?></td>
                 <td><?php echo $datos['lastname']; ?></td>
                 <td><?php echo $datos['nombre_archivo']; ?></td>
-                <td><a href="../subirpdf/archivo.php?id=<?php echo $datos['id_documento']?>" target="_blank"><img src="../../../img/pdf.jpg" width="40" height="40" /></a></td>
+                <td><a href="../subirpdf/archivo.php?id=<?php echo $datos['id_documento']?>" target="iframe_a"><img src="../../../img/pdf.jpg" width="40" height="40" /></a></td>
             </tr>
                 
           <?php  } ?>
             
         </table>
 
+
+                    </div>
+                </div>
+            </div>
+
+
+             <div class="col-md-6">
+                <div class="panel panel-primary">
+                    <div class="panel-heading"><h5>Ver Archivos</h5></div>
+                    <div class="panel-body">
+                         
+                    <iframe height="500px" width="100%" src="" name="iframe_a"></iframe>
 
                     </div>
                 </div>

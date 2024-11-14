@@ -1,7 +1,7 @@
 <?php 
 
 class Conect_MySql {   
-     var $obj = array ( "dbname"	=>	"pqr2",
+     var $obj = array ( "dbname"	=>	"pqr",
                        "dbuser"		=>	"root"		,
                        "dbpwd"		=>	""		,
                        "dbhost"		=>	"localhost"	);

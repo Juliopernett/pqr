@@ -41,7 +41,7 @@
 	if($action == 'ajax'){
 		
          $q = mysqli_real_escape_string($con,(strip_tags($_REQUEST['q'], ENT_QUOTES)));
-		 $aColumns = array('firstname', 'lastname');
+		 $aColumns = array('firstname', 'lastname' , 'perfil' , 'user_email' , 'user_name');
 		 $sTable = "users";
 		 $sWhere = "";
 		if ( $_GET['q'] != "" )
@@ -54,7 +54,7 @@
 			$sWhere = substr_replace( $sWhere, "", -3 );
 			$sWhere .= ')';
 		}
-		$sWhere.=" order by user_id desc";
+		$sWhere.=" order by perfil asc";
 		include 'pagination.php'; 
 
 		$page = (isset($_REQUEST['page']) && !empty($_REQUEST['page']))?$_REQUEST['page']:1;
@@ -77,11 +77,12 @@
 			<div class="table-responsive">
 			  <table class="table">
 				<tr>
-					<th>#</th>
+					<th>#ID</th>
 					<th>Nombres</th>
-					<th>User</th>
+					<th>Usuario</th>
+					<th>Perfil</th>
 					<th>Correo Electronico</th>
-					<th>Fecha</th>
+					<th>Fecha de registro</th>
 					<th><span class="pull-right">Accion</span></th>
 					
 				</tr>
@@ -89,6 +90,7 @@
 				while ($row=mysqli_fetch_array($query)){
 						$user_id=$row['user_id'];
 						$fullname=$row['firstname']." ".$row["lastname"];
+						$user_perfil=$row['perfil'];
 						$user_name=$row['user_name'];
 						$user_email=$row['user_email'];
 						$date_added= date('d/m/Y', strtotime($row['date_added']));
@@ -99,11 +101,13 @@
 					<input type="hidden" value="<?php echo $row['lastname'];?>" id="apellidos<?php echo $user_id;?>">
 					<input type="hidden" value="<?php echo $user_name;?>" id="usuario<?php echo $user_id;?>">
 					<input type="hidden" value="<?php echo $user_email;?>" id="email<?php echo $user_id;?>">
-				
+					<input type="hidden" value="<?php echo $user_perfil;?>" id="perfil<?php echo $user_id;?>">
+
 					<tr>
 						<td><?php echo $user_id; ?></td>
 						<td><?php echo $fullname; ?></td>
 						<td ><?php echo $user_name; ?></td>
+						<td ><?php echo $user_perfil; ?></td>
 						<td ><?php echo $user_email; ?></td>
 						<td><?php echo $date_added;?></td>
 						

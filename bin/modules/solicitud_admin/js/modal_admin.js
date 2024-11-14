@@ -21,6 +21,10 @@ $("#btn_save").click(function(){
       $('#estado').val("")          
              })
       .always(function(){
+        $('#id').val(""),
+      $('#nuevo_estado').val(""),
+     // $('#id_sol').val(""),
+      $('#estado').val("") 
         $('#myModalSol').modal('toggle');
       parent.verCargas($('#id_sol').val()); 
 

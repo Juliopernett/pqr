@@ -45,9 +45,9 @@ session_start();
 					?>
 					<form class="form-horizontal" role="form" id="datos_cotizacion">				
 						<div class="form-group row">
-							<label for="q" class="col-md-2 control-label">Nombres:</label>
+							<label for="q" class="col-md-2 control-label">Buscar por:</label>
 								<div class="col-md-5">
-									<input type="text" class="form-control" id="q" placeholder="Nombre" onkeyup='load(1);'>
+									<input type="text" class="form-control" id="q" placeholder="nombres, usuario, perfil o correo" onkeyup='load(1);'>
 								</div>
 									<button type='button' class="btn btn-primary" data-toggle="modal" data-target="#myModal"></span> Nuevo Usuario</button>
 
@@ -58,10 +58,11 @@ session_start();
 							</div>							
 						</div>				
 				</div>					
-			</form>
+				</form>
+				
 			
 				<div id="resultados"></div>
-				<div class='outer_div'></div>
+				<div class='outer_div'></div><!--tabla de usuarios-->
 
 			</div>
 		</div>
@@ -140,12 +141,15 @@ $( "#editar_password" ).submit(function( event ) {
 			var apellidos = $("#apellidos"+id).val();
 			var usuario = $("#usuario"+id).val();
 			var email = $("#email"+id).val();
+			var perfil = $("#perfil"+id).val();
+			
 			
 			$("#mod_id").val(id);
 			$("#firstname2").val(nombres);
 			$("#lastname2").val(apellidos);
 			$("#user_name2").val(usuario);
 			$("#user_email2").val(email);
+			$("#user_perfil").val(perfil);
 			
 		}
 </script>

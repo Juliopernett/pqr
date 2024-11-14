@@ -5,12 +5,13 @@ include_once Config::$home_bin.Config::$ds.'db'.Config::$ds.'active_table.php';
  class Solicitud extends ADOdb_Active_Record{}
  class Seguimiento extends ADOdb_Active_Record{}
  class Documento extends ADOdb_Active_Record{}
+ class NotificacionAdmin extends ADOdb_Active_Record{}
 class regSolicitud
 {
   public $id;
  // public $user = $_SESSION['user_id'];
 
-public function reg_solicitud($id,$tipo,$descripcion, $fecha)
+public function reg_solicitud($id,$tipo,$descripcion, $fecha, $asunto)
     {
        
         $reg              = new Solicitud('solicitud');
@@ -19,6 +20,7 @@ public function reg_solicitud($id,$tipo,$descripcion, $fecha)
         $reg->descripcion_solicitud = $descripcion;
         $reg->fecha = $fecha;
         $reg->estado_solicitud = "Activa";
+        $reg->asunto = $asunto;
         $reg->Save();
         $this->id = $reg->id_solicitud;
         return $this->id;
@@ -63,11 +65,13 @@ public function reg_solicitud($id,$tipo,$descripcion, $fecha)
       date_default_timezone_set('America/Bogota');
         $fecha = date('Y-m-d');
         $hora =  date ("h:i:s");
+        $currentDateTime=date('m/d/Y H:i:s');
+        $newDateTime = date('h:i A', strtotime($currentDateTime));
         $reg              = new Seguimiento('seguimiento_solicitud');
        // $reg->load("id_seguimiento = {$id}");
         $reg->id_solicitud      = $solicitud;
         $reg->fecha = $fecha;
-        $reg->hora = $hora;
+        $reg->hora = $newDateTime;
         $reg->id_estado = $estado;
         $reg->descripcion_estado = $descripcion;
         //$reg->Save();
@@ -76,8 +80,39 @@ public function reg_solicitud($id,$tipo,$descripcion, $fecha)
 
         $reg->Save();
         
+        if($this->buscarNotificacion($solicitud) != -1)
+        {
+           $this->editNotificacion($this->buscarNotificacion($solicitud));
+        }
+    }
+
+
+    public function editNotificacion($id)
+    {
+      
+        $reg              = new NotificacionAdmin('notificacion');
+        $reg->load("id_notificacion = {$id}");
+        $reg->estado      = 0;     
+        $reg->Save();
         
     }
+
+    public function buscarNotificacion($id)
+  {
+    $db = App::$base;
+        $sql = "SELECT 
+                  id_solicitud, id_notificacion
+                FROM
+                  notificacion                  
+                  WHERE id_solicitud = ?
+                  AND id_solicitud != 0";
+                    $rs = $db->dosql($sql, array($id));
+                    if($rs->fields["id_solicitud"] == "NULL" || $rs->fields["id_solicitud"] == "")
+                  return -1;
+                else
+                  return $rs->fields["id_notificacion"];
+
+  }
 
 
 public function listSolicitud()
@@ -237,6 +272,31 @@ public function eliminar($id)
 
                     $rs->MoveNext();      
                    } 
+                   return $res;
+
+  }
+
+  public function estados()
+  {
+    $db = App::$base;
+        $sql = "SELECT 
+                  id_estado,
+                  descripcion
+                FROM
+                  estado";
+                    $rs = $db->dosql($sql, array());
+
+    while (!$rs->EOF) 
+                   {
+
+                    $res[] = array( 
+                     "id_estado" => $rs->fields['id_estado'],
+                     "descripcion" => $rs->fields['descripcion']
+                     );                     
+
+                    $rs->MoveNext();      
+                   } 
+                   
                    return $res;
 
   }

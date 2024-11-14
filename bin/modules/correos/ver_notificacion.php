@@ -4,7 +4,8 @@ session_start();
         header("location: ../../../login.php");
     exit;
         }
-        if($_SESSION['perfil'] != 'Administrador')
+        if(($_SESSION['perfil'] != 'Administrador') AND  ($_SESSION['perfil'] != 'Empleado')
+        AND  ($_SESSION['perfil'] != 'Gerente') )
         {
           header("location: ../../../login.php");
         }
@@ -65,7 +66,7 @@ session_start();
             
               <div class="col-md-12">
                 <div class="panel panel-primary">
-                   <div class="panel-heading"><h5>Historial PQR</h5></div>
+                   <div class="panel-heading"><h5>Notificaciones</h5></div>
                     <div class="panel-body">
                         <div class="table-responsive"> 
                          <div id="ver_cargas"></div>

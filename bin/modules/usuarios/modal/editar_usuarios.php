@@ -32,12 +32,27 @@
 				  <input type="text" class="form-control" id="user_name2" name="user_name2" placeholder="Usuario" pattern="[a-zA-Z0-9]{2,64}" title="Nombre de usuario ( sólo letras y números, 2-64 caracteres)"required>
 				</div>
 			  </div>
+
+
 			  <div class="form-group">
 				<label for="user_email2" class="col-sm-3 control-label">Email</label>
 				<div class="col-sm-8">
 				  <input type="email" class="form-control" id="user_email2" name="user_email2" placeholder="Correo electrónico" required>
 				</div>
 			  </div>
+			  
+	
+			  <div class="form-group">
+			  <label for="user_perfil" class="col-sm-3 control-label">Elegir Perfil</label>
+				<div class="col-sm-8">
+				<select class="form-control" id="user_perfil" name="user_perfil">
+			      <option value="Usuario">---Elija una opcion---</option>
+				  <option value="Administrador">Administador</option>
+				  <option value="Gerente">Gerente</option>
+				  <option value="Empleado">Empleado</option>
+				</select>
+				</div>
+				</div>
 						 	 
 			
 		  </div>

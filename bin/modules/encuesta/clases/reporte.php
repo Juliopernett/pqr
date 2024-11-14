@@ -14,7 +14,7 @@ class reporte
 FROM
     `preguntas`
 WHERE `id_encuesta`=? and tipo=? order by orden asc";
-
+//var_dump($sql);
         $rs = $con->dosql($sql,array($id_encuesta,'con respuesta predefinida'));
         //var_dump($rs);
          while (!$rs->EOF) 

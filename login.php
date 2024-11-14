@@ -14,7 +14,9 @@ if ($login->isUserLoggedIn() == true) {
 } else {
  
 ?>
-	<!DOCTYPE html>
+
+
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -24,12 +26,16 @@ if ($login->isUserLoggedIn() == true) {
 	<link rel="stylesheet" href="lib/bootstrap.min.css">
    <link href="css/login2.css" type="text/css" rel="stylesheet" media="screen,projection"/>
    <script src="lib/js/jquery.js?v=<?php echo str_replace('.', '', microtime(true)); ?>"></script>
-   
 </head>
 <body>
+
 <div class="container">
     	<div class="row">
 			<div class="col-md-6 col-md-offset-3">
+			
+				<center><img src="imagenes/LogoDDL2014.png" width="35%"> <img src="imagenes/feedback-logo.png" width="50%"  >
+					<!--<h3>Sistema P.Q.R.S</h3>-->
+				</center>
 				<div class="panel panel-login">
 					<div class="panel-heading">
 						<div class="row">
@@ -79,10 +85,10 @@ if ($login->isUserLoggedIn() == true) {
                 <span id="reauth-email" class="reauth-email"></span>
 							
 									<div class="form-group">
-										 <input class="form-control" placeholder="User" name="user_name" type="text" value="" autofocus="" required>
+										 <input class="form-control" placeholder="User" name="user_name" maxlength="30" type="text" value="" autofocus="" required>
 									</div>
 									<div class="form-group">
-										 <input class="form-control" placeholder="password" name="user_password" type="password" value="" autocomplete="off" required>
+										 <input class="form-control" placeholder="password" name="user_password" maxlength="30" type="password" value="" autocomplete="off" required>
 									</div>
 								<!--	<div class="form-group text-center">
 										<input type="checkbox" tabindex="3" class="" name="remember" id="remember">
@@ -110,39 +116,117 @@ if ($login->isUserLoggedIn() == true) {
 									
 	<form method="post" id="guardar_usuario" name="guardar_usuario" style="display: none;">
 			<div id="resultados_ajax"></div>
-			  <div class="form-group">
-								
-				  <input type="text" class="form-control" id="firstname" name="firstname" placeholder="Nombres" required>
-			
+				<!--
+			<div class="form-group  col-lg-6">
+				<label  class="text-muted">Tipo de persona:</label>
+			</div>
+			<div class="form-group  col-lg-6">
+				<input type="radio" id="tipoPersonaRadio" name="tipo_persona" value="N" checked/>
+				<label class="text-muted" for="tipo_persona">Natural</label>
+
+				<input type="radio" id="tipoPersonaRadio" name="tipo_persona" value="J" />
+				<label  class="text-muted"  for="tipo_persona">Jurídica</label>
+			</div>
+
+			<div class="form-group  col-lg-6">
+				<label  class="text-muted">Tipo de identificación:</label>
+			</div>
+			<div  class="form-group col-lg-6" >
+				<select name="tipo_identificacion" id="tipoIdSelect" class="text-muted">
+				<option  value="-1" disabled selected>-- Seleccionar --</option>
+				<option value="NI">Nit</option>
+				<option value="CC">Cédula de ciudadanía</option>
+				<option value="CE">Cédula de extranjería</option>
+				<option value='PA'>Pasaporte</option>
+				</select>                      
+            </div>  
+			-->
+			<div  class="form-group col-lg-6" >
+			    <label  class="text-muted">Tipo de persona:</label>
+			</div>	
+			<div id="group" class="form-group col-lg-6">
+			</div>
+
+			<div class="form-group  col-lg-6">
+				<label  class="text-muted">Tipo de identificación:</label>
+			</div>
+			<div class="form-group col-lg-6">
+				<p id="output"></p>
+			</div>
+			<script>
+				const sizes = ['Natural', 'Juridica'];
+				
+				// generate the radio groups        
+				const group = document.querySelector("#group");
+				group.innerHTML = sizes.map((size) => `<div>
+						<input type="radio" class="text-muted" name="size" value="${size}" id="${size}" required >
+						<label for="${size}">${size}</label>
+					</div>`).join(' ');
+				
+				// add an event listener for the change event
+				const radioButtons = document.querySelectorAll('input[name="size"]');
+
+				for(const radioButton of radioButtons){
+					radioButton.addEventListener('change', showSelected);
+				}        
+				
+				function showSelected(e) {
+					console.log(e);
+					if (this.checked) {
+						elementoActivo = this.value;
+						if (elementoActivo=='Natural'){
+							//SI ES NATURAL
+							//document.querySelector('#output').innerText = 'Seleccionaste: ' + elementoActivo; 
+							$("#divapellido").css("display", "block");
+							document.querySelector('#output').innerHTML = '<select name="tipo_identificacion" id="tipoIdSelect" class="text-muted"><option value="CC">Cédula de ciudadanía</option><option value="CE">Cédula de extranjería</option><option value="PA">Pasaporte</option></select>'
+						}else 
+							{//SI ES JURIDICO
+								$("#divapellido").css("display", "none");
+								//document.querySelector('#output').innerText = `BLANK`;
+								document.querySelector('#output').innerHTML = '<select name="tipo_identificacion" id="tipoIdSelect" class="text-muted"><option value="NI">Nit</option></select>'
+							}
+					}
+				}
+			</script>
+
+			  <div class="form-group col-lg-12">
+				  <input type="text" class="form-control" id="identificacion" name="identificacion" maxlength="30" placeholder="Número de identificación" required>
 			  </div>
-			  <div class="form-group">
-				
-				  <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Apellidos" required>
-			
+			  
+			  <div class="form-group col-lg-6">				
+				  <input type="text" class="form-control" id="firstname" name="firstname" maxlength="60" placeholder="Nombre o razón social" required>
 			  </div>
-			  <div class="form-group">
-				
-				  <input type="text" class="form-control" id="user_name" name="user_name" placeholder="Usuario" pattern="[a-zA-Z0-9]{2,64}" title="Nombre de usuario ( sólo letras y números, 2-64 caracteres)"required>
-			
+
+			  <div id="divapellido" class="form-group col-lg-6" style="display: none" >
+				  <input type="text" class="form-control" id="lastname" name="lastname" maxlength="60" placeholder="Apellidos">
 			  </div>
-			  <div class="form-group">
-				
-				  <input type="email" class="form-control" id="user_email" name="user_email" placeholder="Correo electrónico" required>
-				
+
+			  <div class="form-group col-lg-6">
+				  <input type="text" class="form-control" id="direccion" name="direccion" maxlength="50" placeholder="Dirección" required>
 			  </div>
-			  <div class="form-group">
+
+			  <div class="form-group col-lg-6">
 				
-				  <input type="password" class="form-control" id="user_password_new" name="user_password_new" placeholder="Contraseña" pattern=".{6,}" title="Contraseña ( min . 6 caracteres)" required>
-				
+				  <input type="text" class="form-control" id="telefono" name="telefono" maxlength="20" placeholder="Teléfono" required>
 			  </div>
-			  <div class="form-group">
+
+			  <div class="form-group col-lg-6">
+				  <input type="text" class="form-control" id="user_name" name="user_name" maxlength="30" placeholder="Usuario" pattern="[a-zA-Z0-9]{2,64}" title="Nombre de usuario ( sólo letras y números, 2-64 caracteres)"required>		
+			  </div>
+
+			  <div class="form-group col-lg-6">
+				  <input type="email" class="form-control" id="user_email" name="user_email" placeholder="Correo electrónico" required>	
+			  </div>
+
+			  <div class="form-group col-lg-6">
+				  <input type="password" class="form-control" id="user_password_new" name="user_password_new" maxlength="50" placeholder="Contraseña" pattern=".{6,}" title="Contraseña ( min . 6 caracteres)" required>	
+			  </div>
+
+			  <div class="form-group col-lg-6">
+				  <input type="password" class="form-control" id="user_password_repeat" name="user_password_repeat" maxlength="50" placeholder="Repite contraseña" pattern=".{6,}" required>
+			  </div>
 				
-			
-				  <input type="password" class="form-control" id="user_password_repeat" name="user_password_repeat" placeholder="Repite contraseña" pattern=".{6,}" required>
-			
-				</div>
-				
-			<input type="hidden" value="Empleado" id="perfil" name="perfil">
+			<input type="hidden" value="Usuario" id="perfil" name="perfil">
 					
 		
 		  	<div class="form-group">
@@ -163,7 +247,13 @@ if ($login->isUserLoggedIn() == true) {
 		</div>
 	
 
+		<?php
+
+include 'plantilla/footer1.php';
+?>
   </body>
+ 
+
 </html>
 
 <script>
@@ -198,7 +288,7 @@ $( "#guardar_usuario" ).submit(function( event ) {
 			success: function(datos){
 			$("#resultados_ajax").html(datos);
 			$('#guardar_datos').attr("disabled", false);
-			//load(1);
+			//location.reload(true)
 		  }
 	});
   event.preventDefault();
@@ -206,7 +296,7 @@ $( "#guardar_usuario" ).submit(function( event ) {
 
 
    </script>
-
+  
 	<?php
 }
 

@@ -1,6 +1,5 @@
 <?php
 include '../../../../core.php';
-require '../PHPMailerAutoload.php';
 include_once Config::$home_bin.Config::$ds.'db'.Config::$ds.'active_table.php'; 
  class Notificacion extends ADOdb_Active_Record{}
 class listCorreo
@@ -54,13 +53,20 @@ public function listarNotificacion()
 {
   //var_dump($id);
 	$con = App::$base;
-    $sql = "SELECT 
+  $sql = "SELECT DATEDIFF(NOW(),fecha) as dias,
+              id_estado, 
+              id_solicitud, 
+              para_notificacion,
+              id_seguimiento
+            FROM seguimiento_solicitud 
+            WHERE id_estado = 1 and id_solicitud not in (SELECT id_solicitud FROM notificacion)";
+   /* $sql = "SELECT 
               id_notificacion,
               CONCAT('PQR #', ' ', id_solicitud) as pqr,
               fecha_notificacion,
               descripcion_notificacion
               FROM notificacion
-              WHERE estado = 1";
+              WHERE estado = 1";*/
 
 		$rs = $con->dosql($sql, array());
     //var_dump($this->buscarGrado($id));
@@ -117,47 +123,33 @@ public function listarNotificacion()
   }
 
 public function enviarCorreo($cor){
-//$correo = $this->buscarCorreoDocente($id);
-//var_dump($correo);
-//$curso = $this->buscar($id,1);
-//$estudiante = $this->buscar($id,2);
-//var_dump($cor);
+
 $asunto = "Alerta PQR#  $cor";
-$cuerpo = "No ha solucionado la Solicitud PQR #- $cor , favor revisar, esta es una prueba de recibir correo en el sistema de PQR, German me comentas si lo recibis";
+$cuerpo = "No ha solucionado la Solicitud PQR #- $cor , favor revisar, esta es una prueba de recibir correo en el sistema de PQR";
 $inicio = nl2br("Administrador \nFavor responder este correo a \n\n$cuerpo");
 $mensaje = str_replace("<br />", "", $inicio);
-//$correo = "juanandres12102018@gmail.com";
-//$correo = "germanjativa@gmail.com";
+//$correo = "";
+//$correo = "";
 if($correo == "" || $correo =="NULL" ){
 return -1;}
 else{
-$mail = new PHPMailer;
-/*$mail->IsSMTP();                           // telling the class to use SMTP
-$mail->SMTPAuth   = true;                  // enable SMTP authentication
-$mail->Host       = "smtp.gmail.com"; // set the SMTP server
-$mail->Port       = 587;   */
-$mail->IsSMTP();   
-$mail ->SMTPSecure  =  'ssl' ;                         // telling the class to use SMTP
-$mail->SMTPAuth   = true;                  // enable SMTP authentication
-$mail->Host       = "smtp.gmail.com"; // set the SMTP server
-$mail->Port       = 465;                     // set the SMTP port
-$mail->Username   = "pqr.odontocauca@gmail.com"; // SMTP account username
-$mail->Password   = "odontocauca.2018";        // SMTP account password
-//$mail->setFrom($correo, 'Padre de Familia');
-$mail->setFrom($correo, "Alerta PQR no Resuelta");
-$mail->addAddress($correo, 'Recibe');
-$mail->Subject  = $asunto;
-//$mail->Body     = "$cuerpo <br>".$padre;
-$mail->Body     = $mensaje;
 
-if(!$mail->send()) {
- // echo 'Message was not sent.';
-  //echo 'Mailer error: ' . $mail->ErrorInfo;
-    return -2;
-} else {
-  //echo 'Message has been sent.';
-    return 1;
+$subject = $asunto;// El valor entre corchetes son los atributos name del formulario html
+$msg = $cuerpo;
+$from = $correo;
+// El from DEBE corresponder a una cuenta de correo real creada en el servidor
+$headers = "From: prueba@\r\n"; 
+$headers .= "Reply-To: $from\r\n";
+$headers .= "MIME-Version: 1.0\r\n";
+$headers .= "Content-Type: text/html; charset=utf-8\r\n"; 
+	
+if(mail($from, $subject, $msg,$headers)){
+	//echo "mail enviado";
+	}else{
+	//$errorMessage = error_get_last()['msg'];
+//	echo $errorMessage;
 }
+
 }
 }
 

@@ -74,19 +74,24 @@ session_start();
   <?php
   include("../../../plantilla/navbar.php"); //var_dump($_SESSION['user_id']) ;
   ?>  
-<div class="container-fluid">
-  <form id="form_responder">
-  <div id="datos">
+  <div class="container-fluid">
+      <div class="col-md-12">
+          <div class="panel panel-primary">
+                <div class="panel-heading"><h5>Encuesta de Satisfaccion</h5></div>
+                    <div class="panel-body">
+                        <form id="form_responder">
+                            <div id="datos"></div>
+                        </form>
+                          <div class="row">
+                            <div class="col-md-2">
+                                <button class="btn btn-success" id="responder"><i class="glyphicon glyphicon-floppy-disk"></i> Enviar Datos</button>
+                            </div>
+                          </div>  
+                    </div>
+            </div>
+          </div>
   </div>
-  </form>
-
-<div class="row">
-  <div class="col-md-2">
-    <button class="btn btn-success" id="responder"><i class="glyphicon glyphicon-floppy-disk"></i> Enviar Datos</button>
-  </div>
-</div>           
-            
-</div>
+          
               <!--  <div class="col-md-8">
                 <div class="panel panel-primary">
                    <div class="panel-heading"><h5>Historial PQR</h5></div>

@@ -17,9 +17,13 @@ switch ($opcion) {
 		$res = $disc->buscar($id);
 		echo json_encode($res);		
 		break;
-		case '3':
+	case '3':
 			$disc->editar($id,$desc,$letra, $num);
 			break;
+    case '4':
+			$res = $disc->estados();
+		    echo json_encode($res);
+	break;
 	default:
 		# code...
 		break;

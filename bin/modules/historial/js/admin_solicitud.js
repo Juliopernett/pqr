@@ -11,7 +11,7 @@ function verCargas(id)
            
             $('#myTable').DataTable({
                 sPaginationType: "bootstrap", 
-                //aLengthMenu: [6],
+               // aLengthMenu: [3],
                 order: [[ 0, "desc" ]],
                 language: {sProcessing: "Procesando...",
                     sLengthMenu: "Mostrar _MENU_ registros",
@@ -48,13 +48,13 @@ function verCargas(id)
     });
 }
 
-function verCargas2()
+function verCargas2(est)
 {  
     $.ajax({
         url: 'clases/control_listar.php',
          type: "POST",
          dataType: "html",
-         data: {opcion:"2"},
+         data: {opcion:"2", estado:est},
         success: function (data)
         {
             $('#ver_cargas2').html(data);
@@ -62,7 +62,7 @@ function verCargas2()
             $('#myTable1').DataTable({
                 sPaginationType: "bootstrap", 
                 //aLengthMenu: [6],
-                order: [[ 0, "desc" ]],
+                order: [[ 3, "desc" ]],
                 language: {sProcessing: "Procesando...",
                     sLengthMenu: "Mostrar _MENU_ registros",
                     sZeroRecords: "No se encontraron resultados",
@@ -119,6 +119,27 @@ function editar(id, solicitud)
     });         
 }
 
+function editarSin(id, solicitud)
+{   
+    
+    $.ajax({    url: "clases/control_crud.php",
+              type: "POST",
+              dataType: "json",
+              data: {opcion:"2",id:id},
+          })
+      .done(function(data) {
+      //console.log(data) 
+    $("#descripcionsin").val(data.descripcion_estado);
+    $("#descripcion_solsin").val(data.descripcion_solicitud);
+    $("#id_solsin").val(solicitud);
+    $("#idsin").val(id); 
+    //console.log(data.estado_solicitud)
+           if(data.estado_solicitud == 'Inactivo'){
+            parent.$('#botones').hide();
+           } 
+    });         
+}
+
 
 function listar_seguimiento(id)
 {   
@@ -126,9 +147,25 @@ function listar_seguimiento(id)
         
 }
 
-verCargas2()
+//verCargas2()
+
+$(document).ready(function($){
 
 
+$('#tabla').hide();
+//$('#act_add').prop('disabled', true);
+
+  $('select#estado').on('change',function(){
+     var id = $(this).val();                      
+                    
+                    //$("#valor_estado").val(id);                  
+                    $('#tabla').show();
+                    verCargas2(id);
+                    verCargas("");
+                        
+             });
+
+    });
 /*$(function ()
 {
 $('#form_solicitud').submit(function (e)

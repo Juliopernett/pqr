@@ -21,7 +21,10 @@ $("#btn_save").click(function(){
       $('#estado').val("")          
              })
       .always(function(){
-        $('#myModal').modal('toggle');
+        $('#myModal').on('hidden.bs.modal', function(){
+            $(this).removeData('bs.modal');
+        });
+      $('#myModal').modal('toggle');
       parent.verCargas($('#id_sol').val()); 
 
       })

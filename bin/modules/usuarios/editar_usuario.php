@@ -42,11 +42,12 @@ if (version_compare(PHP_VERSION, '5.3.7', '<')) {
 				$lastname = mysqli_real_escape_string($con,(strip_tags($_POST["lastname2"],ENT_QUOTES)));
 				$user_name = mysqli_real_escape_string($con,(strip_tags($_POST["user_name2"],ENT_QUOTES)));
                 $user_email = mysqli_real_escape_string($con,(strip_tags($_POST["user_email2"],ENT_QUOTES)));
-				
+				$user_perfil = mysqli_real_escape_string($con,(strip_tags($_POST["user_perfil"],ENT_QUOTES)));
+
 				$user_id=intval($_POST['mod_id']);
 					
                
-                    $sql = "UPDATE users SET firstname='".$firstname."', lastname='".$lastname."', user_name='".$user_name."', user_email='".$user_email."'
+                    $sql = "UPDATE users SET firstname='".$firstname."', lastname='".$lastname."', user_name='".$user_name."', user_email='".$user_email."', perfil='".$user_perfil."'
                             WHERE user_id='".$user_id."';";
                     $query_update = mysqli_query($con,$sql);
                     if ($query_update) {

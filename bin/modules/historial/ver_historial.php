@@ -4,7 +4,7 @@ session_start();
         header("location: ../../../login.php");
     exit;
         }
-        if($_SESSION['perfil'] != 'Empleado')
+        if(($_SESSION['perfil'] != 'Usuario') AND ($_SESSION['perfil'] != 'Empleado'))
         {
           header("location: ../../../login.php");
         }
@@ -72,19 +72,30 @@ session_start();
   include("../../../plantilla/navbar.php"); //var_dump($_SESSION['user_id']) ;
   ?>  
 <div class="container-fluid">
-              <div class="col-md-6">
+              <div class="col-md-7">
                 <div class="panel panel-primary">
                   <div class="panel-heading"><h5>Peticiones</h5></div>
-                    <div class="panel-body">
+                   <div class="panel-body">
+                    <div class='col-md-6'>
+                      <select class="form-control" id='estado'>
+                        <option value="-1">--- Selecciones un Estado---</option>
+                        <option value="Activa">Activa</option>
+                        <option value="Espera">En Espera</option>
+                        <option value="Inactiva">Inactiva</option>
+                      </select><br>
+                      <input type="hidden" id='valor_estado'>
+                    </div>
+                    <div class='col-md-12' id='tabla'>
                       <div class="table-responsive"> 
                          <div id="ver_cargas2"></div>
                        </div>
                     </div>
+                    </div>
                 </div>
             </div>
-               <div class="col-md-6">
+               <div class="col-md-5">
                 <div class="panel panel-primary">
-                   <div class="panel-heading"><h5>Historial PQR</h5></div>
+                   <div class="panel-heading"><h5>Evolucion PQR</h5></div>
                     <div class="panel-body">
                         <div class="table-responsive"> 
                          <div id="ver_cargas"></div>
@@ -96,8 +107,9 @@ session_start();
 
 
 <?php
-//include 'modal_ver.php';
+
 include 'modal_solucionar.php';
+include 'modal_sin_accion_usuario.php';
 ?>
   <?php
     include '../../../plantilla/footer1.php';

@@ -41,10 +41,10 @@ class regSolicitud
         {
           $estado_correo = "TERMINADA";
         }
-
-        if ($estado != 1) {
+        $disc->enviarCorreo($solicitud, $estado_correo);
+       /* if ($estado != 1) {
           $disc->enviarCorreo($solicitud, $estado_correo);
-        }
+        }*/
 
         if($this->buscarNotificacion($solicitud) != -1)
         {
@@ -100,11 +100,17 @@ public function listSolicitud($id)
              `seguimiento_solicitud`.`id_seguimiento`,        
              
                \"
-              <button type=\'button\' class=\'btn btn-info btn-sm btn_sol\' data-title=\'Edit\' data-toggle=\'modal\' data-target=\'#myModalSol\' >
-               <span class=\'glyphicon glyphicon-play\'></span></button>
+              <button type=\'button\' class=\'btn btn-primary btn-sm btn_sol\' data-title=\'Edit\' data-toggle=\'modal\' data-target=\'#myModalSol\' >
+               <span class=\'glyphicon glyphicon-edit\'></span></button>
                </div>
                 \" 
-               as editar                
+               as editar,
+                \"
+              <button type=\'button\' class=\'btn btn-info btn-sm btn_sin\' data-title=\'Editsin\' data-toggle=\'modal\' data-target=\'#myModalsinAccion\' >
+               <span class=\'glyphicon glyphicon-book\'></span></button>
+               </div>
+                \" 
+               as editar_sin_accion               
             FROM
               `solicitud`
               INNER JOIN `users` ON (`solicitud`.`user_id` = `users`.`user_id`)
@@ -113,7 +119,7 @@ public function listSolicitud($id)
               INNER JOIN `estado` ON (`estado`.`id_estado` = `seguimiento_solicitud`.`id_estado`)
               WHERE             
               `seguimiento_solicitud`.`id_solicitud` = ?
-              order by `seguimiento_solicitud`.`id_seguimiento` desc
+              order by `seguimiento_solicitud`.`id_seguimiento` asc
                ";
 
 		$rs = $con->dosql($sql, array($id));
@@ -121,6 +127,7 @@ public function listSolicitud($id)
                         <thead>
                         <tr>
                         <th id="yw9_c0">#</th>
+                        <th id="yw9_c0">No</th>
                          <!--  <th id="yw9_c1">Nombres</th>
                         <th id="yw9_c2">Apellidos</th>
                      <th id="yw9_c4">Descripcion</th>-->
@@ -128,12 +135,25 @@ public function listSolicitud($id)
                         <th id="yw9_c6">Hora</th>
                         <th id="yw9_c7">Estado</th>
                         <th id="yw9_c8">Seg</th>
+                       
                    
                         </tr>
                         </thead>
                         <tbody>';
+                        $indexActual= 0;
 		          while (!$rs->EOF) 
                    {
+                    $indexActual++;
+                   // $indexActual=$rs->fields['_GRID_HEADER_06_01'];
+                  // $indexActual= $rs->recordCount();
+                     //var_dump($this->solo_leer_respuesta($rs->fields['id_solicitud']));
+                    $clic = 'onclick="editarSin('.$rs->fields['id_seguimiento'].','.$rs->fields['id_solicitud'].')"';
+                    $edit = utf8_encode($rs->fields['editar_sin_accion']);
+                     if($indexActual == $this->solo_leer_respuesta($rs->fields['id_solicitud']))
+                     {
+                       $clic = 'onclick="editar('.$rs->fields['id_seguimiento'].','.$rs->fields['id_solicitud'].')"';
+                       $edit = utf8_encode($rs->fields['editar']);
+                     }
                     if ($rs->fields['estado_descripcion']=='ENVIADA'){
                           $text_estado="Enviada";
                           $label_class='label-primary';}
@@ -147,7 +167,11 @@ public function listSolicitud($id)
                               $text_estado="Terminada";
                               $label_class='label-success';}
 
-                   	$tabla.='<tr >  
+                   	$tabla.='<tr > 
+
+                              <td>                            
+                                '.utf8_encode($rs->fields['id_seguimiento']).'
+                            </td>
                             <td>                            
                                 '.utf8_encode($rs->fields['numero']).'
                             </td>
@@ -170,10 +194,10 @@ public function listSolicitud($id)
                              <span class="label '.$label_class.'">'.$text_estado.'</span>
                              </td>  
                                                     
-                            <td width= "30" onclick="editar('.$rs->fields['id_seguimiento'].','.$rs->fields['id_solicitud'].')">                            
-                                '.utf8_encode($rs->fields['editar']).'
+                            <td width= "30" '.$clic.'>                            
+                                '.$edit.'
                             </td>
-                            
+                          
 
                             ' ;                                                                               
                             
@@ -187,7 +211,17 @@ public function listSolicitud($id)
 
 }
 
-public function listSolicitud2()
+public function solo_leer_respuesta($solicitud)
+{
+  $db = App::$base;
+        $sql = "SELECT count(id_seguimiento) as todos,max(id_seguimiento) as num 
+                from seguimiento_solicitud 
+                where id_solicitud = ?";
+    $rs = $db->dosql($sql, array($solicitud));
+       return $rs->fields['todos'] ;
+}
+
+public function listSolicitud2($estado)
 {
   $con = App::$base;
     $sql = "SELECT 
@@ -199,21 +233,23 @@ public function listSolicitud2()
             CONCAT(`users`.`firstname`, ' ',
             `users`.`lastname`) AS nombre_completo,
             `solicitud`.`fecha`,
-            `solicitud`.`estado_solicitud`,                    
+            `solicitud`.`estado_solicitud`, 
+            ifnull(`tbl_documentos`.`id_documento`, -1) as id_documento,                   
                \"
               <button type=\'button\' class=\'btn btn-info btn-sm btn_sol\' data-title=\'Edit\'>
-               <span class=\'glyphicon glyphicon-play\'></span></button>
+               <span class=\'glyphicon glyphicon-hand-right\'></span></button>
                </div>
                 \" 
                as ir               
             FROM
-            `tipo_solicitud`
-            INNER JOIN `solicitud` ON (`tipo_solicitud`.`id_tiposolicitud` = `solicitud`.`id_tiposolicitud`)
-            INNER JOIN `users` ON (`solicitud`.`user_id` = `users`.`user_id`)
-            WHERE estado_solicitud <> 'Inactiva'
+          `tbl_documentos`
+          RIGHT JOIN `solicitud` ON (`tbl_documentos`.`id_solicitud` = `solicitud`.`id_solicitud`)
+          INNER JOIN `tipo_solicitud` ON (`solicitud`.`id_tiposolicitud` = `tipo_solicitud`.`id_tiposolicitud`)
+          INNER JOIN `users` ON (`solicitud`.`user_id` = `users`.`user_id`)
+            WHERE estado_solicitud = ?
             ";
 
-    $rs = $con->dosql($sql, array());
+    $rs = $con->dosql($sql, array($estado));
         $tabla = '<table id="myTable1" class="table table-hover table-striped table-bordered table-condensed" cellpadding="0" cellspacing="0" border="2" class="display" >
                         <thead>
                         <tr>
@@ -222,6 +258,7 @@ public function listSolicitud2()
                         <th id="yw9_c2">Usuario</th>
                         <th id="yw9_c3">Fecha</th>
                         <th id="yw9_c4">Estado</th>
+                        <th id="yw9_c4">Archivos</th>
                         <th id="yw9_c5">Ver</th>                   
                         </tr>
                         </thead>
@@ -240,6 +277,17 @@ public function listSolicitud2()
                             $text_estado="En espera";
                             $label_class='label-info';}
 
+                            if($rs->fields['id_documento'] != -1) 
+                            {
+                              $case = '<center><a href="../subirpdf/archivo.php?id='.$rs->fields['id_documento'].'" target="iframe_a">
+                             <img src="../../../img/pdf.jpg" width="40" height="40" /></a></center>';
+
+                            }
+                            else
+                            {
+                            $case = '<center><span class="label label-info">Sin Archivo</span></center>';
+                            }
+
                     $tabla.='<tr >  
                             <td>                            
                                 '.utf8_encode($rs->fields['numero']).'
@@ -253,9 +301,10 @@ public function listSolicitud2()
                             <td>                            
                                 '.utf8_encode($rs->fields['fecha']).'
                             </td>                            
-                            <td align="center">                            
+                           <td align="center">                            
                              <span class="label '.$label_class.'">'.$text_estado.'</span>
-                             </td>  
+                             </td>
+                             <td> '.$case.'</td>
                                                     
                             <td width= "30" onclick="listar_seguimiento('.$rs->fields['id_solicitud'].')">                            
                                 '.utf8_encode($rs->fields['ir']).'
@@ -319,9 +368,13 @@ public function eliminar($id)
                   `seguimiento_solicitud`.`descripcion_estado`,
                   `seguimiento_solicitud`.`id_seguimiento`,
                   `solicitud`.`estado_solicitud`
+                  , CONCAT(`users`.`firstname`,' ', `users`.`lastname` ) as `Nombre_user`
+                  , `users`.`identificacion` as `Identificacion_user` 
+                  , `users`.`user_email` as `Correo_user`
                 FROM
                   `solicitud`
                   INNER JOIN `seguimiento_solicitud` ON (`solicitud`.`id_solicitud` = `seguimiento_solicitud`.`id_solicitud`)
+                  INNER JOIN `users` ON (`users`.`user_id`= `solicitud`.`user_id`)
                   WHERE `seguimiento_solicitud`.`id_seguimiento`= ?";
                     $rs = $db->dosql($sql, array($id));
 
@@ -331,7 +384,10 @@ public function eliminar($id)
                     $res = array( 
                      "descripcion_estado" => $rs->fields['descripcion_estado'],
                      "descripcion_solicitud" => $rs->fields['descripcion_solicitud'],
-                     "estado_solicitud" => $rs->fields['estado_solicitud']
+                     "estado_solicitud" => $rs->fields['estado_solicitud'],
+                     "Nombre_user" => $rs->fields['Nombre_user'],
+                     "Identificacion_user" => $rs->fields['Identificacion_user'],
+                     "Correo_user" => $rs->fields['Correo_user']
                       );
 
                     $rs->MoveNext();      

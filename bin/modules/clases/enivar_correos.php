@@ -153,7 +153,7 @@ $asunto = "Alerta PQR#  $cor";
 $cuerpo = "No ha solucionado la Solicitud PQR #- $cor , favor revisar, esta es una prueba de recibir correo en el sistema de PQR, German me comentas si lo recibis";
 $inicio = nl2br("Administrador \nFavor responder este correo a \n\n$cuerpo");
 $mensaje = str_replace("<br />", "", $inicio);
-$correo = "juanandres12102018@gmail.com";
+$correo = "";
 //$correo = "germanjativa@gmail.com";
 if($correo == "" || $correo =="NULL" ){
 return -1;}
@@ -168,8 +168,8 @@ $mail ->SMTPSecure  =  'ssl' ;                         // telling the class to u
 $mail->SMTPAuth   = true;                  // enable SMTP authentication
 $mail->Host       = "smtp.gmail.com"; // set the SMTP server
 $mail->Port       = 465;                     // set the SMTP port
-$mail->Username   = "pqr.odontocauca@gmail.com"; // SMTP account username
-$mail->Password   = "odontocauca.2018";        // SMTP account password
+$mail->Username   = ""; // SMTP account username
+$mail->Password   = "";        // SMTP account password
 //$mail->setFrom($correo, 'Padre de Familia');
 $mail->setFrom($correo, "Alerta PQR no Resuelta");
 $mail->addAddress($correo, 'Recibe');

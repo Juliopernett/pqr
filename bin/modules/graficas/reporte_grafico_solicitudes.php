@@ -4,7 +4,8 @@ session_start();
         header("location: ../../../login.php");
     exit;
         }
-        if($_SESSION['perfil'] != 'Administrador')
+        if(($_SESSION['perfil'] != 'Administrador') AND  ($_SESSION['perfil'] != 'Empleado')
+        AND  ($_SESSION['perfil'] != 'Gerente') )
         {
           header("location: ../../../login.php");
         }

@@ -4,7 +4,7 @@ include_once 'class_solicitud.php';
 $disc       = new regSolicitud();	
 try
 {
-	$disc->reg_solicitud($user_id,$id_tiposolicitud, $descripcion_solicitud,$fecha);
+	$disc->reg_solicitud($user_id,$id_tiposolicitud, $descripcion_solicitud,$fecha, $asunto_solicitud);
 	$disc->reg_seguimiento();
 
 	if ($sub != -1) {

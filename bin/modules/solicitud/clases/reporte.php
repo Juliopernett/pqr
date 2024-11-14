@@ -86,7 +86,10 @@ public function get_solicitudes($estado,$fecha_ini,$fecha_fin)
   
    
    
-    if($fecha_ini!="" && $fecha_fin!=""){$array=array($estado,$fecha_ini,$fecha_fin);}
+    if($fecha_ini!="" && $fecha_fin!=""){$array=array($estado,$fecha_ini,$fecha_fin);
+      $auxsql.="AND DATE(solicitud.fecha) >= ?";
+      $auxsql.="AND DATE(solicitud.fecha) <= ? ";
+    }
     else{
       if($fecha_ini!=""){$auxsql.="AND DATE(solicitud.fecha) >= ? ";$array=array($estado,$fecha_ini);}
       else
@@ -102,7 +105,7 @@ public function get_solicitudes($estado,$fecha_ini,$fecha_fin)
    $sql = "SELECT
    seguimiento_solicitud.id_seguimiento
    , seguimiento_solicitud.id_solicitud
-   , solicitud.sufijo_solicitud
+   , CONCAT('PQR # ',`solicitud`.`id_solicitud`) AS numero
    , solicitud.descripcion_solicitud
    , seguimiento_solicitud.id_estado
    , estado.descripcion AS des_estado
@@ -124,7 +127,7 @@ FROM
                   {
                    $res[]= array("id_seguimiento"=>$rs->fields['id_seguimiento'],
                                   "id_solicitud"=>$rs->fields['id_solicitud'],
-                                  "sufijo_solicitud"=>$rs->fields['sufijo_solicitud'],
+                                  "sufijo_solicitud"=>$rs->fields['numero'],
                                   "descripcion_solicitud"=>$rs->fields['descripcion_solicitud'],
                                   "id_estado"=>$rs->fields['id_estado'],
                                   "des_estado"=>$rs->fields['des_estado'],

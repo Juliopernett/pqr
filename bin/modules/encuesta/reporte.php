@@ -52,7 +52,7 @@ $pdf = new reportePDF('P','mm','Letter');
 $reporte= new reporte();
 $preguntasOpciones=$reporte->preguntasxencuesta_con_opciones($_GET['id_encuesta']);
 $preguntasRespuestas=$reporte->respuestas_predefinidas($_GET['id_encuesta']);
-
+//dd($preguntasRespuestas);
 for ($i=0; $i < count($preguntasOpciones) ; $i++) { 
 	for ($j=0; $j < count($preguntasOpciones[$i]['opciones']) ; $j++) { 
 	    for ($k=0; $k < count($preguntasRespuestas); $k++) { 	    	
